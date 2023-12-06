@@ -6,18 +6,19 @@ import os
 
 class LocalData:
     def __init__(self, uin: int):
-        data_path = './data/'
-        user_data_path = data_path + str(uin) + '/'
+        self.data_path = './data/'
+        self.user_data_path = self.data_path + str(uin) + '/'
+        self.uin = uin
 
-        if not os.path.exists(user_data_path):
-            os.makedirs(user_data_path)
+        if not os.path.exists(self.user_data_path):
+            os.makedirs(self.user_data_path)
 
-        self.group_history_msg = self.load_file(user_data_path + 'group_history_msg.json')
-        self.group_info = self.load_file(user_data_path + 'group_info.json')
+        self.group_history_msg = self._load_file(self.user_data_path + 'group_history_msg.json')
+        self.group_info = self._load_file(self.user_data_path + 'group_info.json')
 
     @staticmethod
-    def load_file(file_path: str):
-        if not os.path.exists(file_path):
+    def _load_file(file_path: str):
+        if not os.path.exists(file_path) or os.path.getsize(file_path) == 0:
             with open(file_path, 'w') as file:
                 json.dump({}, file)
 
@@ -27,6 +28,18 @@ class LocalData:
                 return data
             except json.JSONDecodeError:
                 return None
+
+    def save_group_msg(self, messages):
+        file_path = self.user_data_path + 'group_history_msg.json'
+        print(f"Saving group messages at {file_path}")
+        with open(file_path, 'r', encoding="utf-8") as file:
+            t = json.load(file)
+            group_id = messages[0]["group_id"]
+            t[group_id] = messages
+        with open(file_path, 'w', encoding="utf-8") as file:
+            json.dump(t, file)
+
+
 
 
 class AppConfig:

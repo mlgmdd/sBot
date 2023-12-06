@@ -2,7 +2,7 @@ from openai import OpenAI
 
 
 class Gpt:
-    def __init__(self, api_key, model="gpt-3.5-turbo"):
+    def __init__(self, api_key, model):
         self.client = OpenAI()
         self.api_key = api_key
         self.model = model

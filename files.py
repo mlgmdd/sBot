@@ -29,15 +29,11 @@ class LocalData:
             except json.JSONDecodeError:
                 return None
 
-    def save_group_msg(self, messages):
+    def save_group_msg(self, data):
         file_path = self.user_data_path + 'group_history_msg.json'
         print(f"Saving group messages at {file_path}")
-        with open(file_path, 'r', encoding="utf-8") as file:
-            t = json.load(file)
-            group_id = messages[0]["group_id"]
-            t[group_id] = messages
         with open(file_path, 'w', encoding="utf-8") as file:
-            json.dump(t, file)
+            json.dump(data, file)
 
 
 

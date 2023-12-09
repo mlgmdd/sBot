@@ -6,6 +6,9 @@ account:
 gpt:
   api-key: your_api_key
   model: gpt-3.5-turbo
+  prompt:
+    system: 你是一个处理信息的AI助手, 擅长总结多人群组的信息.
+    user: 下面给出了一段来自顺序从旧到新的群组聊天信息，请总结并提取其中重要的信息（尤其是面向所有人的通知），并舍弃琐碎的信息.
 
 http:
   url: http://127.0.0.1:5700

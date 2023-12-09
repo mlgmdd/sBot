@@ -18,16 +18,26 @@ class App:
         self.gpt = Gpt(self.config["gpt"]["api-key"], self.config["gpt"]["model"])
         self.bot = Bot(self.uin, self.config["http"]["url"])
 
-        self.refresh_groups_msg()
+        # self.refresh_groups_msg()
 
         self.gap = 0
 
     def refresh_groups_msg(self):
         data = {}
         for group_id in self.local_data.group_info.keys():
-            msgs = app.bot.get_group_msg(group_id)
+            msgs = self.bot.get_group_msg(group_id)
             data[group_id] = msgs
-        app.local_data.save_group_msg(data)
+        self.local_data.save_group_msg(data)
+
+    def get_summary(self, group_id):
+        prompts = [
+            {"role": "system", "content": self.config["gpt"]["prompt"]["system"]},
+            {"role": "user", "content": self.config["gpt"]["prompt"]["user"] + '\n'}
+        ]
+        messages = self.gpt.format_gpt_message(self.local_data.group_history_msg[str(group_id)])
+        prompts[1]["content"] += messages
+        print(f"发出请求... (长度{len(messages)})")
+        return self.gpt.summarize(prompts)
 
     def main_loop(self):
 
@@ -42,12 +52,4 @@ class App:
         self.gap += 1
         return False
 
-
-
-
-if __name__ == "__main__":
-    app = App()
-    # msgs = app.bot.get_group_msg(group_id=603161290)
-    # app.local_data.save_group_msg(msgs)
-    print(msgs)
 

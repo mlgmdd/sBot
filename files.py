@@ -28,19 +28,15 @@ class LocalData:
             data = json.load(file)
             return data
 
-    def save_group_msg(self, data) -> None:
+    def save_group_msg(self, messages, group_id) -> None:
         file_path = self.group_history_msg_path
-        print(f"Saving group messages at {file_path}")
+        self.group_history_msg[str(group_id)] = messages
+        print(f"Saving group {group_id} messages at {file_path}")
         with open(file_path, 'w', encoding="utf-8") as file:
-            json.dump(data, file)
-
-        # 更新group_history_msg
-        self.group_history_msg = self._load_file(file_path)
+            json.dump(self.group_history_msg, file)
 
     def clear_group_msg(self, group_id: int) -> None:
-        data = self.group_history_msg
-        data[str(group_id)] = []
-        self.save_group_msg(data)
+        self.save_group_msg([], group_id)
 
 
 class AppConfig:

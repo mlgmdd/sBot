@@ -45,7 +45,7 @@ class App:
 
     def exec_command(self, action: str, args: list, sender_uin: int):
         if action == "sum" or action == "s":
-            r = self.get_summary(group_id=args[0])
+            r = self.get_summary(group_id=str(args[0]))
             self.bot.send_private_message(r, sender_uin)
 
     def main_loop(self):

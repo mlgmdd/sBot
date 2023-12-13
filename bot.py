@@ -4,8 +4,9 @@ import asyncio
 from post_server import post_server_app
 import _thread
 import time
+import traceback
 
-MAX_MSG_NUMBER = 500
+MAX_MSG_NUMBER = 512
 COMMANDS_LIST = ["sum", "s"]
 
 
@@ -32,6 +33,8 @@ class Bot:
             responds = requests.get(f"{self.url}/get_group_msg_history?group_id={group_id}&message_seq={msg_seq}",
                                     proxies={})
             messages = json.loads(responds.text)["data"]["messages"] + messages
+            if msg_seq == messages[0]["message_seq"]:
+                break  # 全部读取完毕
             msg_seq = messages[0]["message_seq"]
 
         return messages
@@ -53,7 +56,7 @@ class Bot:
             call_back_func(action, args, sender_uin)  # 回调App的方法处理用户指令
         except Exception as e:
             self.send_private_message("Error:\n" + str(e), sender_uin)
-            print("User Command Error:\n", e)
+            traceback.print_exception(e)
 
     def fetch_command_message(self, call_back_func) -> None:
         rsp = self.post_server.get_data()

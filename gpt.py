@@ -21,7 +21,7 @@ class Gpt:
         return completion.choices[0].message.content
 
     @staticmethod
-    def format_gpt_message(messages) -> str:
+    def format_gpt_message(messages: dict) -> str:
         format_messages = ""
         for msg in messages:
             content = msg["message"]

@@ -13,7 +13,9 @@ class LocalData:
         if not os.path.exists(self.user_data_path):
             os.makedirs(self.user_data_path)
 
-        self.group_history_msg = self._load_file(self.user_data_path + 'group_history_msg.json')
+        self.group_history_msg_path = self.user_data_path + 'group_history_msg.json'
+
+        self.group_history_msg = self._load_file(self.group_history_msg_path)
         self.group_info = self._load_file(self.user_data_path + 'group_info.json')
 
     @staticmethod
@@ -26,29 +28,33 @@ class LocalData:
             data = json.load(file)
             return data
 
-
-    def save_group_msg(self, data):
-        file_path = self.user_data_path + 'group_history_msg.json'
+    def save_group_msg(self, data) -> None:
+        file_path = self.group_history_msg_path
         print(f"Saving group messages at {file_path}")
         with open(file_path, 'w', encoding="utf-8") as file:
             json.dump(data, file)
 
-        self.group_history_msg = self._load_file(self.user_data_path + 'group_history_msg.json')
-        self.group_info = self._load_file(self.user_data_path + 'group_info.json')
+        # 更新group_history_msg
+        self.group_history_msg = self._load_file(file_path)
 
-
+    def clear_group_msg(self, group_id: int) -> None:
+        data = self.group_history_msg
+        data[str(group_id)] = []
+        self.save_group_msg(data)
 
 
 class AppConfig:
-    def __init__(self, path="./config_dict.yml"):
+    def __init__(self, path="./config.yml"):
         self.path = path
-        self.config_dict = self.read_app_config_file()
+        self.config_dict = self._read_app_config_file()
+        self._missing_check()
 
-    def read_app_config_file(self):
+    def _read_app_config_file(self) -> dict:
         try:
             with open(self.path, 'r', encoding='utf-8') as file:
                 config = yaml.safe_load(file)
                 return config
+
         except FileNotFoundError:
             raise Exception("Config File Not found")
         except yaml.YAMLError as exc:

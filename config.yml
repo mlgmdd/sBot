@@ -2,6 +2,8 @@
 
 account:
   uin: 3122296804
+  admin_uin:
+    - 2313833532
 
 gpt:
   api-key: your_api_key
@@ -11,6 +13,9 @@ gpt:
     user: 下面给出了一段来自顺序从旧到新的群组聊天信息，请总结并提取其中重要的信息（尤其是面向所有人的通知），并舍弃琐碎的信息.
 
 http:
-  url: http://127.0.0.1:5700
+  url: http://127.0.0.1:5700  # cqhttp服务器
+  post_url: http://127.0.0.1:5701  # cqhttp反向post服务器
 
-
+bot:
+  refresh_interval: 10
+  command_prefix: /  # 管理员指令的前缀
